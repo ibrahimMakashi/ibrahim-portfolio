@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { portfolioData } from "../portfolioData";
 import { Send, CheckCircle } from "lucide-react";
@@ -17,6 +17,14 @@ const Contact = () => {
   const { contact } = portfolioData;
   const [focused, setFocused] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth > 1024);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const inputStyle = (isFocused) => ({
     width: "100%",
@@ -101,17 +109,16 @@ const Contact = () => {
           viewport={{ once: true, margin: "-10%" }}
           style={{
             display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(min(100%, 400px), 1fr))",
-            gap: "8vw",
-            alignItems: "flex-start",
+            gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr", // Strictly 2 columns on laptop/desktop, stacked on tablets/phones
+            gap: "clamp(3rem, 8vw, 6rem)",
+            alignItems: "center", // Vertically center the content with the form when side-by-side
           }}
         >
           {/* Left Column: Contact Typography */}
           <motion.div custom={0} variants={fadeUp}>
             <h2
               style={{
-                fontSize: "clamp(2.5rem, 8vw, 6rem)",
+                fontSize: "clamp(2rem, 8vw, 6rem)", // Further reduced the minimum size
                 lineHeight: 1.05,
                 fontWeight: 900,
                 fontFamily: "var(--font-primary)",
@@ -136,9 +143,9 @@ const Contact = () => {
             <p
               style={{
                 color: "var(--text-muted)",
-                fontSize: "1.2rem",
-                lineHeight: 1.8,
-                marginBottom: "4rem",
+                fontSize: "clamp(0.95rem, 3vw, 1.2rem)", // Scale text based on viewport
+                lineHeight: 1.6,
+                marginBottom: "3rem",
                 maxWidth: "450px",
               }}
             >
@@ -169,13 +176,14 @@ const Contact = () => {
                 <a
                   href={`mailto:${contact.email}`}
                   style={{
-                    fontSize: "1.5rem",
+                    fontSize: "clamp(1rem, 4vw, 1.5rem)", // Shrink email text on mobile
                     fontWeight: 600,
                     color: "var(--text-main)",
                     transition: "color 0.3s",
                     textDecoration: "none",
                     position: "relative",
                     display: "inline-block",
+                    wordBreak: "break-all", // Crucial: Prevents long emails from breaking the right edge of screen!
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.color = "var(--accent)";
@@ -203,7 +211,7 @@ const Contact = () => {
                 </span>
                 <span
                   style={{
-                    fontSize: "1.5rem",
+                    fontSize: "clamp(1rem, 4vw, 1.5rem)", // Shrink phone text as well
                     fontWeight: 600,
                     color: "var(--text-main)",
                   }}
@@ -366,8 +374,9 @@ const Contact = () => {
                   type="submit"
                   disabled={submitted}
                   style={{
-                    marginTop: "2rem",
-                    padding: "1.5rem",
+                    marginTop: "1.5rem",
+                    padding:
+                      "clamp(1rem, 3vw, 1.5rem) clamp(1.5rem, 5vw, 2.5rem)", // Responsive padding
                     backgroundColor: submitted
                       ? "var(--bg-color)"
                       : "var(--accent)",
@@ -376,7 +385,7 @@ const Contact = () => {
                       ? "1px solid rgba(255,255,255,0.2)"
                       : "none",
                     borderRadius: "50px",
-                    fontSize: "1.1rem",
+                    fontSize: "clamp(0.85rem, 2.5vw, 1.1rem)", // Shrinks aggressively on mobile
                     fontWeight: 800,
                     textTransform: "uppercase",
                     letterSpacing: "2px",

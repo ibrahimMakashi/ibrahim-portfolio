@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { portfolioData } from "../portfolioData";
 import { Github, Linkedin, Instagram, ArrowUpRight } from "lucide-react";
@@ -9,6 +9,14 @@ const Footer = () => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth > 1024);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Parallax scroll effect for the glowing text
   const { scrollYProgress } = useScroll();
@@ -264,20 +272,23 @@ const Footer = () => {
           width: "100vw",
           display: "flex",
           justifyContent: "center",
-          alignItems: "flex-end", // Push it flush to the bottom
+          alignItems: "flex-end", // Push it downwards
           pointerEvents: "none",
           marginTop: "auto", // Push to bottom of flex container
           y: yParallax,
           opacity: opacityParallax,
           position: "relative",
           zIndex: 1,
-          bottom: "-5px", // Tweak to ensure it's completely flush
         }}
       >
         <svg
           viewBox="0 0 1000 220"
           preserveAspectRatio="xMidYMid meet"
-          style={{ width: "100%", height: "auto" }}
+          style={{
+            width: "100%",
+            height: "auto",
+            marginBottom: isDesktop ? "0" : "clamp(2rem, 6vw, 4.5rem)",
+          }} // Leaves scaling breathing room at bottom ONLY on mobile
         >
           <motion.text
             initial={{ strokeDasharray: "0 1000", fill: "rgba(255,255,255,0)" }}

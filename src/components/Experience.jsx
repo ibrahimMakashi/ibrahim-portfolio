@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { portfolioData } from "../portfolioData";
 import { Briefcase } from "lucide-react";
@@ -18,7 +18,18 @@ const Experience = () => {
     damping: 30,
   });
 
+  const bgTextX = useTransform(smoothProgress, [0, 1], ["-10%", "-50%"]);
+  const lineScaleY = useTransform(smoothProgress, [0.2, 0.8], [0, 1]);
+
   const { experience } = portfolioData;
+
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize(); // Check on mount
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <section
@@ -52,7 +63,7 @@ const Experience = () => {
             textTransform: "uppercase",
             whiteSpace: "nowrap",
             lineHeight: 1,
-            x: useTransform(smoothProgress, [0, 1], ["-10%", "-50%"]),
+            x: bgTextX,
           }}
         >
           EXPERIENCE ARRAY
@@ -123,33 +134,42 @@ const Experience = () => {
 
         {/* Central Timeline Layout */}
         <div style={{ position: "relative", padding: "0 5vw" }}>
-          {/* Animated Central Line Tracker */}
-          <motion.div
-            style={{
-              position: "absolute",
-              left: "5vw",
-              top: 0,
-              bottom: 0,
-              width: "2px",
-              background: "rgba(255,255,255,0.05)",
-              transformOrigin: "top",
-            }}
-          />
-          <motion.div
-            style={{
-              position: "absolute",
-              left: "5vw",
-              top: 0,
-              bottom: 0,
-              width: "2px",
-              background: "var(--accent)",
-              transformOrigin: "top",
-              scaleY: useTransform(smoothProgress, [0.2, 0.8], [0, 1]),
-            }}
-          />
+          {/* Animated Central Line Tracker - Hidden on mobile for totally different look */}
+          {!isMobile && (
+            <>
+              <motion.div
+                style={{
+                  position: "absolute",
+                  left: "5vw",
+                  top: 0,
+                  bottom: 0,
+                  width: "2px",
+                  background: "rgba(255,255,255,0.05)",
+                  transformOrigin: "top",
+                }}
+              />
+              <motion.div
+                style={{
+                  position: "absolute",
+                  left: "5vw",
+                  top: 0,
+                  bottom: 0,
+                  width: "2px",
+                  background: "var(--accent)",
+                  transformOrigin: "top",
+                  scaleY: lineScaleY,
+                }}
+              />
+            </>
+          )}
 
           {experience.map((exp, index) => (
-            <TimelineItem key={exp.id} exp={exp} index={index} />
+            <TimelineItem
+              key={exp.id}
+              exp={exp}
+              index={index}
+              isMobile={isMobile}
+            />
           ))}
         </div>
       </div>
@@ -158,54 +178,60 @@ const Experience = () => {
 };
 
 // Extracted Sub-component for individual timeline cards
-const TimelineItem = ({ exp, index }) => {
+const TimelineItem = ({ exp, index, isMobile }) => {
   const itemRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: itemRef,
     offset: ["start end", "center center"],
   });
 
+  const dotBoxShadow = useTransform(
+    scrollYProgress,
+    [0.5, 1],
+    ["0 0 0px transparent", "0 0 20px rgba(255,69,0,0.6)"],
+  );
+
+  const dotScale = useTransform(scrollYProgress, [0.5, 1], [0.5, 1.2]);
+
   return (
     <div
       ref={itemRef}
       style={{
         position: "relative",
-        paddingLeft: "clamp(2.5rem, 8vw, 5rem)",
-        marginBottom: "8vh",
+        paddingLeft: isMobile ? "0" : "clamp(2.5rem, 8vw, 5rem)",
+        marginBottom: isMobile ? "4vh" : "8vh",
       }}
     >
-      {/* Glowing Pulsing Dot matching the scroll progress line */}
-      <motion.div
-        style={{
-          position: "absolute",
-          left: "clamp(-10px, -1.5vw, -13px)", // Correctly anchors dot to line regardless of screen size
-          top: "40px",
-          width: "clamp(20px, 3vw, 28px)",
-          height: "clamp(20px, 3vw, 28px)",
-          borderRadius: "50%",
-          backgroundColor: "var(--bg-main)",
-          border: "clamp(2px, 0.5vw, 4px) solid var(--accent)",
-          zIndex: 2,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: useTransform(
-            scrollYProgress,
-            [0.5, 1],
-            ["0 0 0px transparent", "0 0 20px rgba(255,69,0,0.6)"],
-          ),
-          scale: useTransform(scrollYProgress, [0.5, 1], [0.5, 1.2]),
-        }}
-      >
-        <div
+      {/* Glowing Pulsing Dot matching the scroll progress line - hidden on mobile */}
+      {!isMobile && (
+        <motion.div
           style={{
-            width: "8px",
-            height: "8px",
+            position: "absolute",
+            left: "clamp(-10px, -1.5vw, -13px)", // Correctly anchors dot to line regardless of screen size
+            top: "40px",
+            width: "clamp(20px, 3vw, 28px)",
+            height: "clamp(20px, 3vw, 28px)",
             borderRadius: "50%",
-            backgroundColor: "var(--text-main)",
+            backgroundColor: "var(--bg-main)",
+            border: "clamp(2px, 0.5vw, 4px) solid var(--accent)",
+            zIndex: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: dotBoxShadow,
+            scale: dotScale,
           }}
-        />
-      </motion.div>
+        >
+          <div
+            style={{
+              width: "8px",
+              height: "8px",
+              borderRadius: "50%",
+              backgroundColor: "var(--text-main)",
+            }}
+          />
+        </motion.div>
+      )}
 
       {/* Floating Glassmorphic Card */}
       <motion.div
@@ -223,13 +249,19 @@ const TimelineItem = ({ exp, index }) => {
           borderColor: "rgba(255,255,255,0.15)",
         }}
         style={{
-          backgroundColor: "rgba(10, 10, 10, 0.7)",
+          backgroundColor: isMobile
+            ? "rgba(10, 10, 10, 0.85)"
+            : "rgba(10, 10, 10, 0.7)", // darker on mobile
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          padding: "clamp(2rem, 5vw, 3.5rem)",
+          padding: isMobile ? "2rem 1.5rem" : "clamp(2rem, 5vw, 3.5rem)", // Tighter padding
           borderRadius: "24px",
-          border: "1px solid rgba(255,255,255,0.05)",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
+          border: isMobile
+            ? "1px solid rgba(255,69,0,0.15)"
+            : "1px solid rgba(255,255,255,0.05)", // give it an accent border on mobile
+          boxShadow: isMobile
+            ? "0 10px 20px rgba(0,0,0,0.8)"
+            : "0 20px 40px rgba(0,0,0,0.5)",
           cursor: "default",
           transition: "all 0.4s ease",
         }}
@@ -250,10 +282,11 @@ const TimelineItem = ({ exp, index }) => {
             <div
               style={{
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
+                justifyContent: isMobile ? "flex-start" : "space-between",
+                alignItems: isMobile ? "stretch" : "flex-start",
+                flexDirection: isMobile ? "column" : "row", // Stack title and date on mobile
                 flexWrap: "wrap",
-                gap: "1.5rem",
+                gap: isMobile ? "0.5rem" : "1.5rem",
               }}
             >
               <div
@@ -277,7 +310,9 @@ const TimelineItem = ({ exp, index }) => {
 
                 <h3
                   style={{
-                    fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
+                    fontSize: isMobile
+                      ? "1.2rem"
+                      : "clamp(1.4rem, 4vw, 2.2rem)", // Heavily reduce font size on small screens
                     color: "var(--text-main)",
                     fontWeight: 800,
                     fontFamily: "var(--font-primary)",
@@ -295,16 +330,19 @@ const TimelineItem = ({ exp, index }) => {
                 style={{
                   fontFamily: "var(--font-secondary)",
                   color: "var(--accent)",
-                  fontSize: "clamp(0.75rem, 2vw, 0.95rem)",
+                  fontSize: isMobile
+                    ? "0.75rem"
+                    : "clamp(0.75rem, 2vw, 0.95rem)",
                   fontWeight: 700,
                   letterSpacing: "1px",
                   backgroundColor: "rgba(255, 69, 0, 0.1)",
-                  padding: "0.5rem 1rem",
+                  padding: "0.4rem 0.8rem",
                   borderRadius: "50px",
                   border: "1px solid rgba(255,69,0,0.2)",
                   textTransform: "uppercase",
                   whiteSpace: "nowrap",
-                  marginTop: "0.5rem",
+                  marginTop: isMobile ? "0" : "0.5rem",
+                  alignSelf: isMobile ? "flex-start" : "auto",
                 }}
               >
                 {exp.period}
@@ -313,12 +351,12 @@ const TimelineItem = ({ exp, index }) => {
 
             <h4
               style={{
-                fontSize: "clamp(0.95rem, 3vw, 1.2rem)",
+                fontSize: isMobile ? "0.9rem" : "clamp(0.95rem, 3vw, 1.2rem)",
                 color: "var(--text-muted)",
                 fontWeight: 600,
                 textTransform: "uppercase",
-                letterSpacing: "2px",
-                paddingLeft: "clamp(40px, 6vw, 60px)", // keeps it indented underneath the briefcase icon
+                letterSpacing: "1px",
+                paddingLeft: isMobile ? "0" : "clamp(40px, 6vw, 60px)", // Flush on mobile
               }}
             >
               <span style={{ opacity: 0.5 }}>AT</span>{" "}
@@ -328,11 +366,11 @@ const TimelineItem = ({ exp, index }) => {
             <p
               style={{
                 color: "rgba(255,255,255,0.7)",
-                fontSize: "clamp(0.95rem, 3vw, 1.15rem)",
+                fontSize: isMobile ? "0.9rem" : "clamp(0.95rem, 3vw, 1.15rem)",
                 lineHeight: 1.6,
                 maxWidth: "700px",
                 marginTop: "0.5rem",
-                paddingLeft: "clamp(0px, 6vw, 60px)", // INDENTS on desktop, FLUSH on mobile
+                paddingLeft: isMobile ? "0" : "clamp(0px, 6vw, 60px)", // Flush on mobile
               }}
             >
               {exp.description}
