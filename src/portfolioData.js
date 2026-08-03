@@ -73,17 +73,17 @@ export const portfolioData = {
   about: {
     title: "CRAFTING ADVANCED\nINTELLIGENT SYSTEMS",
     description:
-      "I am a Software Web Developer with 1 year of professional experience at Matrix Infotech Solution. I focus on bridging the gap between design and scalable engineering, ensuring every application is not just functional, but a revolutionary experience. Throughout my journey, I have successfully delivered 10+ different projects, integrating bleeding-edge AI to build smarter, faster, and more robust systems.",
+      "I am a Full Stack Software Engineer with 1+ years of experience at Matrix Infotech Solution building scalable web applications with React.js, Node.js, and MongoDB. I specialize in integrating AI-driven features—including RAG pipelines and LLM-based automation—into production CRM and logistics platforms.",
     coreSkills: [
       "React.js",
+      "TypeScript",
       "Node.js",
       "Express",
       "MongoDB",
-      "MERN Stack",
-      "Redux",
+      "LangChain",
+      "OpenAI",
       "AWS",
-      "Agentic AI",
-      "AI Technology",
+      "RAG / LLMs",
     ],
     video:
       "https://videos.pexels.com/video-files/3129671/3129671-hd_1920_1080_30fps.mp4",
@@ -91,61 +91,43 @@ export const portfolioData = {
   portfolio: [
     {
       id: 1,
-      title: "Matrix CRM",
+      title: "AI Logistics Route Engine",
       description:
-        "A high-performance analytics dashboard for financial data visualization.",
-      tags: ["React", "Express", "Framer Motion"],
+        "RAG-based recommendation engine using LangChain, OpenAI embeddings, and MongoDB Atlas Vector Search to help logistics teams choose optimal providers from historical shipment intelligence.",
+      tags: ["LangChain", "OpenAI", "MongoDB Atlas", "RAG"],
+      image:
+        "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1000&auto=format&fit=crop",
+      link: "#",
+    },
+    {
+      id: 2,
+      title: "AI-Powered CRM Platform",
+      description:
+        "Enterprise CRM with AI-generated proposals, automated email workflows, role-based access control, and workflow automation to streamline day-to-day business operations.",
+      tags: ["React", "Node.js", "OpenAI", "RBAC"],
       image:
         "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop",
       link: "#",
     },
     {
-      id: 2,
-      title: "Matrix E-Commerce",
-      description:
-        "Scalable MERN stack e-commerce application with real-time inventory management.",
-      tags: ["MongoDB", "Express", "React", "Node.js"],
-      image:
-        "https://images.unsplash.com/photo-1557821552-17105176677c?q=80&w=1000&auto=format&fit=crop",
-      link: "#",
-    },
-    {
       id: 3,
-      title: "Creative Agency Website",
+      title: "RAG AI Knowledge Platform",
       description:
-        "A cinematic interactive corporate presence with advanced scroll animations.",
-      tags: ["React", "CSS", "GSAP"],
+        "Retrieval-Augmented Generation pipeline covering PDF ingestion, embeddings, semantic search, and LLM-powered response generation for enterprise knowledge retrieval.",
+      tags: ["LangChain", "Embeddings", "LLMs", "Vector Search"],
       image:
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop",
-      link: "#",
-    },
-    {
-      id: 4,
-      title: "Admin Panel System",
-      description:
-        "A dark-mode optimized CMS dashboard offering role-based access control.",
-      tags: ["React", "Redux", "Node.js"],
-      image:
-        "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?q=80&w=1000&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1000&auto=format&fit=crop",
       link: "#",
     },
   ],
   experience: [
     {
       id: 1,
-      role: "Software Web Developer",
+      role: "Full Stack Developer",
       company: "Matrix Infotech Solution",
-      period: "June 2025 - present",
+      period: "June 2025 - Present",
       description:
-        "Developing robust MERN stack applications, optimizing frontend performance, and leading the integration of modern UI/UX principles.",
-    },
-    {
-      id: 2,
-      role: "Full Stack Web Developer",
-      company: "Matrix Infotech Solution",
-      period: "June 2025 - present",
-      description:
-        "Built scalable component-driven React applications and collaborated closely with design teams to establish scalable design systems.",
+        "Developing and maintaining full-stack web apps with React.js, TypeScript, Node.js, Express.js, and MongoDB. Building GenAI features with OpenAI, LangChain, and Vector Search, JWT/RBAC auth, payment gateways, WebSocket notifications, and AWS EC2 deployments.",
     },
   ],
   contact: {
